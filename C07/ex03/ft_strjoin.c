@@ -14,66 +14,67 @@
 
 int	ft_strlen(char *str)
 {
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
+	if (!(*str))
+		return (0);
+	return (1 + ft_strlen(++str));
 }
 
-int	ft_fulllen(int n, char **str, char *sep)
+int	get_s_len(int size, char **strs, char *sep)
 {
+	int	r;
 	int	i;
-	int	len;
 
-	i = 0;
-	len = 0;
-	while (i != n)
-	{
-		len += ft_strlen(str[i]);
-		if (i != n - 1)
-			len += ft_strlen(sep);
-		i++;
-	}
-	return (len);
+	i = -1;
+	r = 0;
+	while (++i < size)
+		r += ft_strlen(strs[i]);
+	r += (size - 1) * ft_strlen(sep);
+	return (r);
 }
 
-char	*ft_strcat(char *dest, char *src)
+void	ft_put_str_in_s(char *s, char *str, int *i)
 {
-	int	dest_len;
-	int	i;
-
-	i = 0;
-	dest_len = ft_strlen(dest);
-	while (src[i])
+	while (*str)
 	{
-		dest[dest_len + i] = src[i];
-		i++;
+		*(s++) = *(str++);
+		(*i)++;
 	}
-	dest[dest_len + i] = '\0';
-	return (dest);
+}
+
+void	ft_put_sep_in_s(char *s, char *sep, int *i)
+{
+	while (*sep)
+	{
+		*(s++) = *(sep++);
+		(*i)++;
+	}
 }
 
 char	*ft_strjoin(int size, char **strs, char *sep)
 {
-	char	*text;
-	int		len;
+	char	*r;
 	int		i;
+	int		j;
+	int		s_len;
 
-	i = 0;
 	if (size == 0)
-		return (malloc(sizeof(char)));
-	len = ft_fulllen(size, strs, sep);
-	text = malloc(len * sizeof(int));
-	if (!text)
-		return (NULL);
-	while (i != size)
 	{
-		text = ft_strcat(text, strs[i]);
-		if (i != size - 1)
-			text = ft_strcat(text, sep);
-		i++;
+		r = (char *) malloc(1);
+		r[0] = 0;
 	}
-	return (text);
+	else
+	{
+		s_len = get_s_len(size, strs, sep);
+		r = (char *) malloc(s_len);
+		i = 0;
+		j = -1;
+		while (++j < size)
+		{
+			ft_put_str_in_s(&r[i], strs[j], &i);
+			if (j + 1 < size)
+				ft_put_sep_in_s(&r[i], sep, &i);
+		}
+		r[i] = 0;
+	}
+	return (r);
 }
